@@ -4,16 +4,37 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { FileText, Book } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const Index = () => {
+  const { user, signOut } = useAuth();
+
   return (
     <div className="min-h-screen bg-[#F1F0FB]">
-      <nav className="absolute top-0 right-0 p-6">
+      <nav className="absolute top-0 right-0 p-6 flex gap-4">
         <Link to="/about">
           <Button variant="ghost" className="text-paradocs-text hover:bg-black/5">
             About
           </Button>
         </Link>
+        {user ? (
+          <>
+            <Link to="/dashboard">
+              <Button variant="ghost" className="text-paradocs-text hover:bg-black/5">
+                Dashboard
+              </Button>
+            </Link>
+            <Button variant="ghost" onClick={signOut} className="text-paradocs-text hover:bg-black/5">
+              Sign out
+            </Button>
+          </>
+        ) : (
+          <Link to="/auth">
+            <Button variant="ghost" className="text-paradocs-text hover:bg-black/5">
+              Sign in
+            </Button>
+          </Link>
+        )}
       </nav>
       
       <main className="container-custom min-h-screen flex flex-col items-center justify-center">
