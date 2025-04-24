@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { LogIn, UserPlus } from 'lucide-react';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -71,23 +72,31 @@ const Auth = () => {
               required
             />
           </div>
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            {isLoading ? 'Loading...' : isSignUp ? 'Sign up' : 'Sign in'}
-          </Button>
+          <div className="flex gap-4">
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading}
+              variant={!isSignUp ? "default" : "outline"}
+              onClick={() => setIsSignUp(false)}
+            >
+              <LogIn className="mr-2" /> Sign In
+            </Button>
+            <Button 
+              type="submit" 
+              className="w-full bg-black text-white hover:bg-gray-800" 
+              disabled={isLoading}
+              variant={isSignUp ? "default" : "outline"}
+              onClick={() => setIsSignUp(true)}
+            >
+              <UserPlus className="mr-2" /> Sign Up
+            </Button>
+          </div>
         </form>
-
-        <div className="text-center">
-          <button
-            type="button"
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-sm text-gray-600 hover:text-gray-900"
-          >
-            {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
-          </button>
-        </div>
       </div>
     </div>
   );
 }
 
 export default Auth;
+
