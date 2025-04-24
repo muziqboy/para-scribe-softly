@@ -1,10 +1,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/layout/Navbar';
 import Logo from '../components/ui/custom/Logo';
 import { Button } from '../components/ui/button';
-import { Google, Microsoft } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -41,7 +39,6 @@ const Index = () => {
               size="lg"
               className="flex items-center gap-2 px-6 py-6 text-lg hover:bg-black/5"
             >
-              <Google className="h-5 w-5" />
               Google Workspace
             </Button>
             <Button 
@@ -49,7 +46,6 @@ const Index = () => {
               size="lg"
               className="flex items-center gap-2 px-6 py-6 text-lg hover:bg-black/5"
             >
-              <Microsoft className="h-5 w-5" />
               Microsoft 365
             </Button>
           </div>
