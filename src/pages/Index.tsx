@@ -3,14 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { FileText, Book } from 'lucide-react';
+import { FileText, Book, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Index = () => {
   const { user, signOut } = useAuth();
 
   return (
-    <div className="min-h-screen bg-[#F1F0FB]">
+    <div className="min-h-screen bg-[#f0eee6]">
       <nav className="absolute top-0 right-0 p-6 flex gap-4">
         <Link to="/about">
           <Button variant="ghost" className="text-paradocs-text hover:bg-black/5">
@@ -29,11 +29,18 @@ const Index = () => {
             </Button>
           </>
         ) : (
-          <Link to="/auth">
-            <Button variant="ghost" className="text-paradocs-text hover:bg-black/5">
-              Sign in
-            </Button>
-          </Link>
+          <>
+            <Link to="/auth">
+              <Button variant="outline" className="text-paradocs-text">
+                <LogIn className="mr-2" /> Sign In
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button className="bg-black text-white hover:bg-gray-800">
+                <UserPlus className="mr-2" /> Sign Up
+              </Button>
+            </Link>
+          </>
         )}
       </nav>
       
@@ -80,3 +87,4 @@ const Index = () => {
 };
 
 export default Index;
+
