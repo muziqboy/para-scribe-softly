@@ -25,12 +25,13 @@ const Index = () => {
           />
           
           <div className="space-y-6">
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-paradocs-text">
+            <h1 className="font-sans text-5xl font-bold">
               Paradocs
             </h1>
-            <p className="text-xl md:text-2xl text-paradocs-text/80 font-light">
-              Let's get started.
+            <p className="text-xl font-sans text-gray-600 tracking-tight mb-8">
+              Let’s get started.
             </p>
+
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">

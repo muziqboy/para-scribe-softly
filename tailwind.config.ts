@@ -62,14 +62,15 @@ export default {
           softgray: "#F1F0FB"
         },
       },
+      
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)"
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        heading: ['Work Sans', 'sans-serif']
+        sans: ['NotionInter', 'Inter', 'sans-serif'],
+        heading: ['NotionInter', 'Work Sans', 'sans-serif']
       },
       keyframes: {
         "accordion-down": {
