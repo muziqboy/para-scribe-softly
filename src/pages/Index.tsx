@@ -20,7 +20,7 @@ const Index = () => {
           <Link to="/">
             <Logo className="text-white" />
           </Link>
-          <nav className="flex items-center space-x-6">
+          <nav className="flex items-center space-x-4 sm:space-x-6">
             <Link to="/about" className="text-white/80 hover:text-white font-medium">
               About
             </Link>
@@ -49,29 +49,25 @@ const Index = () => {
         </div>
       </header>
       
-      <main className="container-custom pt-32 pb-20">
-        <div className="max-w-6xl mx-auto space-y-32">
-          {/* Hero Section */}
+      <main className="container-custom pt-16 sm:pt-24 lg:pt-32 pb-20">
+        <div className="max-w-6xl mx-auto space-y-24 sm:space-y-32">
           <div className="text-center">
-            <h1 className="font-sans text-[120px] font-bold text-white leading-none">
+            <h1 className="font-sans text-5xl sm:text-7xl lg:text-[120px] font-bold text-white leading-none">
               paradocs
             </h1>
           </div>
 
-          {/* Product Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            {/* Inkwell Card */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
             <div className="product-card space-y-6">
-              <h2 className="text-5xl font-bold">inkwell</h2>
-              <p className="text-xl text-white/80 leading-relaxed">
+              <h2 className="text-4xl sm:text-5xl font-bold">inkwell</h2>
+              <p className="text-lg sm:text-xl text-white/80 leading-relaxed">
                 Your written past, transformed into a forward-thinking copilot
               </p>
             </div>
 
-            {/* Echo Card */}
             <div className="product-card space-y-6">
-              <h2 className="text-5xl font-bold">echo</h2>
-              <p className="text-xl text-white/80 leading-relaxed">
+              <h2 className="text-4xl sm:text-5xl font-bold">echo</h2>
+              <p className="text-lg sm:text-xl text-white/80 leading-relaxed">
                 An adaptive tutor that builds interactive learning experiences based on your needs
               </p>
             </div>

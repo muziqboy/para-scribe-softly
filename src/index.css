@@ -6,7 +6,7 @@
   font-display: swap;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -51,7 +51,7 @@
   
   body {
     @apply bg-black text-white antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Geist Sans', sans-serif;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
   }
 
@@ -84,6 +84,6 @@
   }
 
   .product-card {
-    @apply p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)];
+    @apply p-8 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] backdrop-blur-md bg-white/5 hover:bg-white/10;
   }
 }
