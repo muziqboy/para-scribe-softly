@@ -53,7 +53,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto space-y-24 sm:space-y-32">
           <div className="text-center">
             <h1 className="font-sans text-5xl sm:text-7xl lg:text-[120px] font-bold text-white leading-none">
-              paradocs
+              paradocs... soon
             </h1>
           </div>
 
