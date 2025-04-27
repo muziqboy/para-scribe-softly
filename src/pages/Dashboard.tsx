@@ -1,3 +1,4 @@
+
 // Dashboard.tsx — Paradocs full dashboard with TipTap Editor
 
 import React, { useState, useEffect } from 'react';
@@ -108,23 +109,23 @@ const Dashboard = () => {
   }, [aiResponse, editor]);
 
   return (
-    <div className="min-h-screen bg-[#f0eee6]">
+    <div className="min-h-screen bg-black text-white">
       <Helmet>
         <title>Dashboard – Paradocs</title>
       </Helmet>
 
-      <header className="w-full py-6 bg-white/60 backdrop-blur-md">
+      <header className="w-full py-6 bg-black/60 backdrop-blur-md border-b border-white/10">
         <div className="container-custom flex justify-between items-center">
           <Link to="/">
             <Logo />
           </Link>
           <nav className="flex items-center space-x-6">
-            <Link to="/about" className="text-paradocs-text hover:text-black font-medium">
+            <Link to="/about" className="text-white hover:text-gray-300 font-medium">
               About
             </Link>
             <button
               onClick={signOut}
-              className="text-paradocs-text hover:text-black font-medium"
+              className="text-white hover:text-gray-300 font-medium"
             >
               Sign Out
             </button>
@@ -133,18 +134,18 @@ const Dashboard = () => {
       </header>
 
       <main className="container-custom pt-24 pb-20">
-        <h1 className="text-3xl font-bold mb-8">Document Workspace</h1>
+        <h1 className="text-3xl font-bold mb-8 text-white">Document Workspace</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <div className="lg:col-span-2">
-            <div className="border border-gray-300 rounded-lg p-4 bg-white min-h-[400px]">
-              <EditorContent editor={editor} />
+            <div className="border border-white/20 rounded-lg p-4 bg-white/5 backdrop-blur-md min-h-[400px]">
+              <EditorContent editor={editor} className="prose prose-invert max-w-none" />
             </div>
 
             <div className="flex justify-end mt-4">
               <button
                 onClick={() => setIsPromptOpen(true)}
-                className="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition"
+                className="bg-white text-black py-2 px-6 rounded-full hover:bg-gray-200 transition"
               >
                 Prompt
               </button>
@@ -165,19 +166,19 @@ const Dashboard = () => {
       </main>
 
       {isPromptOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-96">
-            <h2 className="text-xl font-semibold mb-4">Send selected text to AI?</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-black/80 border border-white/20 p-6 rounded-lg w-96 backdrop-blur-md">
+            <h2 className="text-xl font-semibold mb-4 text-white">Send selected text to AI?</h2>
             <div className="flex gap-4 justify-end">
               <button
                 onClick={() => setIsPromptOpen(false)}
-                className="px-4 py-2 border rounded hover:bg-gray-100"
+                className="px-4 py-2 border border-white/20 rounded hover:bg-white/10 text-white"
               >
                 Cancel
               </button>
               <button
                 onClick={handlePrompt}
-                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                className="bg-white text-black px-4 py-2 rounded hover:bg-gray-200"
               >
                 Confirm
               </button>
@@ -187,12 +188,12 @@ const Dashboard = () => {
       )}
 
       {loading && (
-        <p className="mt-4 text-gray-500 text-center">Processing your request...</p>
+        <p className="mt-4 text-gray-400 text-center">Processing your request...</p>
       )}
 
-      <footer className="py-8 bg-white">
+      <footer className="py-8 bg-black/60 backdrop-blur-md border-t border-white/10">
         <div className="container-custom">
-          <p className="text-center text-muted-foreground text-sm">
+          <p className="text-center text-gray-400 text-sm">
             © 2025 Paradocs. All rights reserved.
           </p>
         </div>

@@ -18,20 +18,20 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onActionSelect, isProcess
   ];
 
   return (
-    <div className="card-soft">
-      <h3 className="font-heading text-lg font-semibold mb-4">Actions</h3>
+    <div className="backdrop-blur-md bg-black/40 border border-white/20 p-6 rounded-xl">
+      <h3 className="font-heading text-lg font-semibold mb-4 text-white">Actions</h3>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {actions.map((action) => (
           <button
             key={action.id}
-            className="flex flex-col items-center justify-center p-4 rounded-xl border border-paradocs-muted
-              bg-white hover:bg-paradocs-softgray transition-all hover:shadow-sm
+            className="flex flex-col items-center justify-center p-4 rounded-xl border border-white/20
+              bg-black/60 hover:bg-white/10 backdrop-blur-md transition-all hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]
               disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => onActionSelect(action.id as ActionType)}
             disabled={isProcessing}
           >
-            <span className="font-medium">{action.label}</span>
-            <span className="text-xs text-muted-foreground text-center mt-1">{action.description}</span>
+            <span className="font-medium text-white">{action.label}</span>
+            <span className="text-xs text-gray-400 text-center mt-1">{action.description}</span>
           </button>
         ))}
       </div>
