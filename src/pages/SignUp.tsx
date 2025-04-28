@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import Logo from '@/components/ui/custom/Logo';
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,13 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +31,7 @@ const SignUp = () => {
         email, 
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
       
@@ -43,6 +51,48 @@ const SignUp = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { 
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    }
+  };
+  
+  const handleMicrosoftSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: { 
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
     }
   };
 
@@ -103,7 +153,7 @@ const SignUp = () => {
               className="w-full bg-black text-white hover:bg-gray-800" 
               disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? 'Creating account...' : 'Sign Up'}
             </Button>
           </form>
 
@@ -127,20 +177,7 @@ const SignUp = () => {
 
           <div className="space-y-4">
             <Button 
-              onClick={async () => {
-                const { error } = await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: { redirectTo: `${window.location.origin}/` }
-                });
-                
-                if (error) {
-                  toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: error.message,
-                  });
-                }
-              }}
+              onClick={handleGoogleSignIn}
               className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
             >
               <img src="https://www.google.com/favicon.ico" className="w-5 h-5 mr-2" alt="Google" />
@@ -148,20 +185,7 @@ const SignUp = () => {
             </Button>
             
             <Button 
-              onClick={async () => {
-                const { error } = await supabase.auth.signInWithOAuth({
-                  provider: 'azure',
-                  options: { redirectTo: `${window.location.origin}/` }
-                });
-                
-                if (error) {
-                  toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: error.message,
-                  });
-                }
-              }}
+              onClick={handleMicrosoftSignIn}
               className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
             >
               <img src="https://www.microsoft.com/favicon.ico" className="w-5 h-5 mr-2" alt="Microsoft" />

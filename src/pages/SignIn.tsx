@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import Logo from '@/components/ui/custom/Logo';
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +15,14 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
+  
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +40,48 @@ const SignIn = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { 
+          redirectTo: `${window.location.origin}/dashboard` 
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    }
+  };
+  
+  const handleMicrosoftSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: { 
+          redirectTo: `${window.location.origin}/dashboard` 
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
     }
   };
 
@@ -87,10 +139,10 @@ const SignIn = () => {
             </div>
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full bg-black text-white hover:bg-gray-800" 
               disabled={isLoading}
             >
-              Sign In
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
 
@@ -114,20 +166,7 @@ const SignIn = () => {
 
           <div className="space-y-4">
             <Button 
-              onClick={async () => {
-                const { error } = await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: { redirectTo: `${window.location.origin}/` }
-                });
-                
-                if (error) {
-                  toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: error.message,
-                  });
-                }
-              }}
+              onClick={handleGoogleSignIn}
               className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
             >
               <img src="https://www.google.com/favicon.ico" className="w-5 h-5 mr-2" alt="Google" />
@@ -135,20 +174,7 @@ const SignIn = () => {
             </Button>
             
             <Button 
-              onClick={async () => {
-                const { error } = await supabase.auth.signInWithOAuth({
-                  provider: 'azure',
-                  options: { redirectTo: `${window.location.origin}/` }
-                });
-                
-                if (error) {
-                  toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: error.message,
-                  });
-                }
-              }}
+              onClick={handleMicrosoftSignIn}
               className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
             >
               <img src="https://www.microsoft.com/favicon.ico" className="w-5 h-5 mr-2" alt="Microsoft" />
