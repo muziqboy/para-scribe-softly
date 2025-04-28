@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,8 +23,10 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn } from '@/lib/utils';
 
+type AppName = 'inkwell' | 'echo';
+
 interface HeaderProps {
-  currentApp?: 'inkwell' | 'echo' | undefined;
+  currentApp?: AppName;
   toggleSidebar?: () => void;
   isMobile?: boolean;
 }
