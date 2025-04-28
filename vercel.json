@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/auth/callback", "destination": "/index.html" },
+    { "source": "/dashboard",     "destination": "/index.html" },
+    { "source": "/documents",     "destination": "/index.html" },
+    { "source": "/document/:id*", "destination": "/index.html" },
+    { "source": "/echo",          "destination": "/index.html" },
+    { "source": "/settings",      "destination": "/index.html" },
+    { "source": "/(.*)",          "destination": "/index.html" }
+  ]
+}
