@@ -67,7 +67,9 @@ const DocumentEditor: React.FC = () => {
           if (typeof document.content === 'string') {
             editor.commands.setContent(JSON.parse(document.content));
           } else {
-            editor.commands.setContent(document.content);
+            // Ensure we pass a valid content format to the editor
+            const content = typeof document.content === 'object' ? document.content : '<p>Start writing...</p>';
+            editor.commands.setContent(content);
           }
         } else {
           editor.commands.setContent('<p>Start writing...</p>');
