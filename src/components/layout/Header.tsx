@@ -1,8 +1,11 @@
+// src/components/layout/Header.tsx
+'use client';
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import Logo from '@/components/ui/custom/Logo';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/supabase-js';
+import { BookText, MessageSquare, LogOut, Settings, User as UserIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -12,197 +15,121 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  BookText,
-  MessageSquare,
-  Settings,
-  User,
-  Menu
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn } from '@/lib/utils';
 
 type AppName = 'inkwell' | 'echo';
 
 interface HeaderProps {
-  currentApp?: AppName;
-  toggleSidebar?: () => void;
-  isMobile?: boolean;
+  user: User | null;
 }
 
-const Header: React.FC<HeaderProps> = ({ 
-  currentApp, 
-  toggleSidebar,
-  isMobile = false
-}) => {
-  const { user, signOut } = useAuth();
-  const userInitials = user?.email?.charAt(0).toUpperCase() || 'U';
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  
+/** Derive the current app from the path: /docs & /doc/* = inkwell, /echo = echo */
+function useCurrentApp(): AppName {
+  const pathname = usePathname();
+  return pathname.startsWith('/docs') || pathname.startsWith('/doc')
+    ? 'inkwell'
+    : 'echo';
+}
+
+export default function Header({ user }: HeaderProps) {
+  const router          = useRouter();
+  const supabase        = useSupabaseClient();
+  const currentApp      = useCurrentApp();
+  const isInkwell       = currentApp === 'inkwell';
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.replace('/auth/login');
+  }
+
   return (
-    <header className="sticky top-0 w-full backdrop-blur-md bg-ink-white/70 border-b border-gray-200 z-50">
-      <div className="container-custom flex justify-between items-center h-14">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          {toggleSidebar && isMobile && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={toggleSidebar}
-              className="mr-2 md:hidden"
-            >
-              <Menu size={20} />
-              <span className="sr-only">Toggle Sidebar</span>
-            </Button>
-          )}
-          
-          <Link to="/" className="flex items-center">
-            <Logo />
-            <span className="text-lg font-semibold ml-2 text-ink-black">Paradocs</span>
-          </Link>
-        </div>
-        
-        {/* App Navigation Links */}
+    <header className="fixed top-0 z-50 w-full bg-ink-white/70 backdrop-blur">
+      <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4">
+        {/* Brand */}
+        <Link href="/" className="text-lg font-semibold tracking-tight">
+          Paradocs
+        </Link>
+
+        {/* Center app-switch links (hidden on small screens) */}
+        <nav className="hidden md:flex">
+          <div className="flex gap-2 rounded-full bg-gray-100/60 p-1">
+            <AppLink
+              href="/docs"
+              icon={<BookText size={16} />}
+              label="Inkwell"
+              active={isInkwell}
+            />
+            <AppLink
+              href="/echo"
+              icon={<MessageSquare size={16} />}
+              label="Echo"
+              active={!isInkwell}
+            />
+          </div>
+        </nav>
+
+        {/* Avatar / dropdown */}
         {user && (
-          <nav className="hidden md:flex items-center">
-            <div className="flex space-x-4 rounded-full bg-gray-100/50 p-1">
-              {currentApp !== 'inkwell' && (
-                <Link 
-                  to="/documents" 
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium",
-                    "hover:bg-white hover:shadow-sm transition-all duration-150",
-                    currentApp === 'inkwell' ? "bg-white shadow-sm" : "text-gray-700"
-                  )}
-                >
-                  <BookText size={16} />
-                  <span>Inkwell</span>
-                </Link>
-              )}
-              
-              {currentApp !== 'echo' && (
-                <Link 
-                  to="/echo" 
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium",
-                    "hover:bg-white hover:shadow-sm transition-all duration-150",
-                    currentApp === 'echo' ? "bg-white shadow-sm" : "text-gray-700"
-                  )}
-                >
-                  <MessageSquare size={16} />
-                  <span>Echo</span>
-                </Link>
-              )}
-            </div>
-          </nav>
-        )}
-        
-        {/* User Menu */}
-        {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded-full outline-none ring-offset-2 ring-offset-white focus-visible:ring-2 ring-ink-accent">
-                <Avatar className="h-8 w-8 border border-gray-200">
-                  <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || 'User'} />
-                  <AvatarFallback className="bg-ink-accent text-white text-sm">{userInitials}</AvatarFallback>
-                </Avatar>
-              </button>
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src={user.user_metadata?.avatar_url ?? undefined} />
+                <AvatarFallback>
+                  {user.email?.charAt(0).toUpperCase() ?? '?'}
+                </AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="flex items-center gap-2">
-                <User size={18} />
-                <div className="flex flex-col">
-                  <span>{user.user_metadata?.full_name || user.email}</span>
-                  {user.user_metadata?.full_name && (
-                    <span className="text-xs text-muted-foreground">{user.email}</span>
-                  )}
-                </div>
+                <UserIcon size={14} />
+                {user.email}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {/* Switch link duplicated here for accessibility */}
               <DropdownMenuItem asChild>
-                <Link to="/documents" className="flex items-center gap-2 cursor-pointer">
-                  <BookText size={16} />
-                  <span>Inkwell</span>
+                <Link href={isInkwell ? '/echo' : '/docs'}>
+                  {isInkwell ? 'Go to Echo' : 'Go to Inkwell'}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/echo" className="flex items-center gap-2 cursor-pointer">
-                  <MessageSquare size={16} />
-                  <span>Echo</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
-                  <Settings size={16} />
-                  <span>Settings</span>
+                <Link href="/settings/style">
+                  <Settings size={14} className="mr-2" />
+                  Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+              <DropdownMenuItem onSelect={handleSignOut} className="text-red-600">
+                <LogOut size={14} className="mr-2" />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        ) : (
-          <Link to="/signin">
-            <Button className="bg-ink-black hover:bg-ink-black/90 text-white">Sign In</Button>
-          </Link>
-        )}
-
-        {/* Mobile Menu */}
-        {user && isMobile && (
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="sm">
-                <Menu size={20} />
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <div className="p-4 space-y-4">
-                <Link 
-                  to="/documents"
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsDrawerOpen(false)}
-                >
-                  <BookText size={18} />
-                  <span className="text-base font-medium">Inkwell</span>
-                </Link>
-                <Link 
-                  to="/echo"
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsDrawerOpen(false)}
-                >
-                  <MessageSquare size={18} />
-                  <span className="text-base font-medium">Echo</span>
-                </Link>
-                <div className="pt-2 border-t">
-                  <Link 
-                    to="/settings"
-                    className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
-                    onClick={() => setIsDrawerOpen(false)}
-                  >
-                    <Settings size={18} />
-                    <span className="text-base font-medium">Settings</span>
-                  </Link>
-                  <button 
-                    onClick={() => { 
-                      signOut();
-                      setIsDrawerOpen(false);
-                    }}
-                    className="w-full flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md text-left"
-                  >
-                    <span className="text-base font-medium">Sign out</span>
-                  </button>
-                </div>
-              </div>
-            </DrawerContent>
-          </Drawer>
         )}
       </div>
     </header>
   );
-};
+}
 
-export default Header;
+/* Small helper component for the nav pills */
+interface AppLinkProps {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  active: boolean;
+}
+function AppLink({ href, icon, label, active }: AppLinkProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition',
+        active
+          ? 'bg-white shadow-sm'
+          : 'text-gray-700 hover:bg-white hover:shadow-sm'
+      )}
+    >
+      {icon}
+      {label}
+    </Link>
+  );
+}
