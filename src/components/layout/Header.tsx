@@ -1,9 +1,8 @@
+
 // src/components/layout/Header.tsx
 'use client';
 
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Link, useLocation } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
 import {
   BookText,
@@ -26,37 +25,39 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
+// Define a type for app names
 type AppName = 'inkwell' | 'echo';
 
 interface HeaderProps {
   user: User | null;
 }
 
-/** Decide which app we’re in from the pathname */
+/** Decide which app we're in from the pathname */
 function useCurrentApp(): AppName {
-  const pathname = usePathname();
-  return pathname.startsWith('/docs') || pathname.startsWith('/doc')
+  const location = useLocation();
+  const pathname = location.pathname;
+  
+  return pathname.startsWith('/docs') || pathname.startsWith('/doc') || pathname.startsWith('/document')
     ? 'inkwell'
     : 'echo';
 }
 
 export default function Header({ user }: HeaderProps) {
-  const router     = useRouter();
-  const supabase   = useSupabaseClient();
+  const { signOut } = useAuth();
   const currentApp = useCurrentApp();
-  const isInkwell  = currentApp === 'inkwell';
+  const isInkwell = currentApp === 'inkwell';
 
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    router.replace('/auth/login');
-  }
+  const handleSignOut = () => {
+    signOut();
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full bg-ink-white/70 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4">
         {/* Brand */}
-        <Link href="/" className="text-lg font-semibold tracking-tight">
+        <Link to="/" className="text-lg font-semibold tracking-tight">
           Paradocs
         </Link>
 
@@ -64,13 +65,13 @@ export default function Header({ user }: HeaderProps) {
         <nav className="hidden md:flex">
           <div className="flex gap-2 rounded-full bg-gray-100/60 p-1">
             <AppLink
-              href="/docs"
+              to="/documents"
               icon={<BookText size={16} />}
               label="Inkwell"
               active={isInkwell}
             />
             <AppLink
-              href="/echo"
+              to="/echo"
               icon={<MessageSquare size={16} />}
               label="Echo"
               active={!isInkwell}
@@ -99,19 +100,19 @@ export default function Header({ user }: HeaderProps) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href={isInkwell ? '/echo' : '/docs'}>
+                <Link to={isInkwell ? '/echo' : '/documents'}>
                   {isInkwell ? 'Go to Echo' : 'Go to Inkwell'}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/settings/style">
+                <Link to="/settings/style">
                   <Settings size={14} className="mr-2" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={handleSignOut}
+                onClick={handleSignOut}
                 className="text-red-600"
               >
                 <LogOut size={14} className="mr-2" />
@@ -127,15 +128,16 @@ export default function Header({ user }: HeaderProps) {
 
 /* pill-style nav link */
 interface AppLinkProps {
-  href: string;
+  to: string;
   icon: React.ReactNode;
   label: string;
   active: boolean;
 }
-function AppLink({ href, icon, label, active }: AppLinkProps) {
+
+function AppLink({ to, icon, label, active }: AppLinkProps) {
   return (
     <Link
-      href={href}
+      to={to}
       className={cn(
         'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition',
         active

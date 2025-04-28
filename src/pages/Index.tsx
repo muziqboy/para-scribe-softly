@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/ui/custom/Logo';
 import { BookText, MessageSquare } from 'lucide-react';
+import Header from '@/components/layout/Header';
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -31,8 +32,10 @@ const Index = () => {
       <Helmet>
         <title>Paradocs - Select Application</title>
       </Helmet>
+      
+      <Header user={user} />
 
-      <main className="container-custom py-16 md:py-24">
+      <main className="container-custom py-16 md:py-24 pt-24">
         <div className="max-w-3xl mx-auto text-center">
           <div className="flex justify-center mb-8">
             <Logo className="h-16 w-16" />
