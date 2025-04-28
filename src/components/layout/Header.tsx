@@ -28,10 +28,11 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
 // Define a type for app names
-type AppName = 'inkwell' | 'echo';
+export type AppName = 'inkwell' | 'echo';
 
 interface HeaderProps {
-  user: User | null;
+  user?: User | null; // Make user optional
+  currentApp?: AppName; // Add currentApp prop
 }
 
 /** Decide which app we're in from the pathname */
@@ -44,10 +45,15 @@ function useCurrentApp(): AppName {
     : 'echo';
 }
 
-export default function Header({ user }: HeaderProps) {
-  const { signOut } = useAuth();
-  const currentApp = useCurrentApp();
+export default function Header({ user, currentApp: explicitApp }: HeaderProps) {
+  const { user: authUser, signOut } = useAuth();
+  const implicitCurrentApp = useCurrentApp();
+  // Use explicitly provided app name or the one derived from pathname
+  const currentApp = explicitApp || implicitCurrentApp;
   const isInkwell = currentApp === 'inkwell';
+  
+  // Use the user prop if provided, otherwise use the user from auth context
+  const displayUser = user !== undefined ? user : authUser;
 
   const handleSignOut = () => {
     signOut();
@@ -80,23 +86,23 @@ export default function Header({ user }: HeaderProps) {
         </nav>
 
         {/* Avatar dropdown */}
-        {user && (
+        {displayUser && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarImage
-                  src={user.user_metadata?.avatar_url ?? undefined}
-                  alt={user.email ?? 'User'}
+                  src={displayUser.user_metadata?.avatar_url ?? undefined}
+                  alt={displayUser.email ?? 'User'}
                 />
                 <AvatarFallback>
-                  {user.email?.charAt(0).toUpperCase() ?? '?'}
+                  {displayUser.email?.charAt(0).toUpperCase() ?? '?'}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="flex items-center gap-2">
                 <UserIcon size={14} />
-                {user.email}
+                {displayUser.email}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>

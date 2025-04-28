@@ -30,7 +30,7 @@ const Echo = () => {
         <meta name="description" content="Echo messaging application - coming soon" />
       </Helmet>
       
-      <Header currentApp="echo" />
+      <Header user={user} currentApp="echo" />
       
       <main className="container-custom py-16 flex flex-col items-center justify-center">
         <div className="bg-blue-50 p-4 rounded-full mb-6">

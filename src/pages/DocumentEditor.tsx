@@ -169,14 +169,14 @@ const DocumentEditor: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-[#F7F7F2]">
+    <div className="min-h-screen bg-ink-white text-ink-black">
       <Helmet>
         <title>{title || 'Untitled'} – Inkwell</title>
       </Helmet>
 
-      <Header currentApp="inkwell" />
+      <Header user={user} currentApp="inkwell" />
 
-      <div className="bg-[#0A0A0A] border-b border-white/10">
+      <div className="bg-gray-50 border-b border-gray-200">
         <div className="container-custom py-2 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Link to="/documents">

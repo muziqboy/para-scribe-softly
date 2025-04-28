@@ -107,7 +107,7 @@ const Documents = () => {
         <meta name="description" content="View and manage your documents" />
       </Helmet>
       
-      <Header currentApp="inkwell" />
+      <Header user={user} currentApp="inkwell" />
       
       <main className="container-custom py-8">
         <div className="flex justify-between items-center mb-8">
