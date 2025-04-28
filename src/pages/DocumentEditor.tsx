@@ -32,7 +32,7 @@ const DocumentEditor = () => {
 
   const editor = useEditor({
     extensions: [StarterKit],
-    content: document?.content || '<p>Start writing...</p>',
+    content: document?.content ? JSON.stringify(document.content) : '<p>Start writing...</p>',
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
@@ -60,7 +60,11 @@ const DocumentEditor = () => {
 
   useEffect(() => {
     if (document && editor && !editor.isDestroyed) {
-      editor.commands.setContent(document.content || '<p>Start writing...</p>');
+      editor.commands.setContent(document.content 
+        ? typeof document.content === 'string' 
+          ? document.content 
+          : JSON.stringify(document.content) 
+        : '<p>Start writing...</p>');
     }
   }, [document, editor]);
 

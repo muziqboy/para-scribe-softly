@@ -11,7 +11,9 @@ import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
-import AuthCallback from "./pages/AuthCallback"; // New component for handling callbacks
+import AuthCallback from "./pages/AuthCallback";
+import Documents from "./pages/Documents";
+import DocumentEditor from "./pages/DocumentEditor";
 import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
