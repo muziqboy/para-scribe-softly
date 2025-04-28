@@ -5,8 +5,18 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { User } from '@supabase/supabase-js';
-import { BookText, MessageSquare, LogOut, Settings, User as UserIcon } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  BookText,
+  MessageSquare,
+  LogOut,
+  Settings,
+  User as UserIcon,
+} from 'lucide-react';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +33,7 @@ interface HeaderProps {
   user: User | null;
 }
 
-/** Derive the current app from the path: /docs & /doc/* = inkwell, /echo = echo */
+/** Decide which app we’re in from the pathname */
 function useCurrentApp(): AppName {
   const pathname = usePathname();
   return pathname.startsWith('/docs') || pathname.startsWith('/doc')
@@ -32,10 +42,10 @@ function useCurrentApp(): AppName {
 }
 
 export default function Header({ user }: HeaderProps) {
-  const router          = useRouter();
-  const supabase        = useSupabaseClient();
-  const currentApp      = useCurrentApp();
-  const isInkwell       = currentApp === 'inkwell';
+  const router     = useRouter();
+  const supabase   = useSupabaseClient();
+  const currentApp = useCurrentApp();
+  const isInkwell  = currentApp === 'inkwell';
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -50,7 +60,7 @@ export default function Header({ user }: HeaderProps) {
           Paradocs
         </Link>
 
-        {/* Center app-switch links (hidden on small screens) */}
+        {/* App-switch links (hidden on small screens) */}
         <nav className="hidden md:flex">
           <div className="flex gap-2 rounded-full bg-gray-100/60 p-1">
             <AppLink
@@ -68,12 +78,15 @@ export default function Header({ user }: HeaderProps) {
           </div>
         </nav>
 
-        {/* Avatar / dropdown */}
+        {/* Avatar dropdown */}
         {user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
-                <AvatarImage src={user.user_metadata?.avatar_url ?? undefined} />
+                <AvatarImage
+                  src={user.user_metadata?.avatar_url ?? undefined}
+                  alt={user.email ?? 'User'}
+                />
                 <AvatarFallback>
                   {user.email?.charAt(0).toUpperCase() ?? '?'}
                 </AvatarFallback>
@@ -85,7 +98,6 @@ export default function Header({ user }: HeaderProps) {
                 {user.email}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {/* Switch link duplicated here for accessibility */}
               <DropdownMenuItem asChild>
                 <Link href={isInkwell ? '/echo' : '/docs'}>
                   {isInkwell ? 'Go to Echo' : 'Go to Inkwell'}
@@ -98,7 +110,10 @@ export default function Header({ user }: HeaderProps) {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={handleSignOut} className="text-red-600">
+              <DropdownMenuItem
+                onSelect={handleSignOut}
+                className="text-red-600"
+              >
                 <LogOut size={14} className="mr-2" />
                 Sign out
               </DropdownMenuItem>
@@ -110,7 +125,7 @@ export default function Header({ user }: HeaderProps) {
   );
 }
 
-/* Small helper component for the nav pills */
+/* pill-style nav link */
 interface AppLinkProps {
   href: string;
   icon: React.ReactNode;
