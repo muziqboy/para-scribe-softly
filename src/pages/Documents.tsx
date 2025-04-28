@@ -1,128 +1,130 @@
 
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import Logo from '@/components/ui/custom/Logo';
-import { PlusIcon } from 'lucide-react';
-
-interface Document {
-  id: string;
-  title: string;
-  updated_at: string;
-}
+import { Plus } from 'lucide-react';
+import Header from '@/components/layout/Header';
+import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 
 const Documents = () => {
-  const { user, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-
+  const { toast } = useToast();
+  
   const { data: documents, isLoading } = useQuery({
     queryKey: ['documents'],
     queryFn: async () => {
+      if (!user) return [];
+      
       const { data, error } = await supabase
         .from('documents')
-        .select('id, title, updated_at')
+        .select('*')
         .order('updated_at', { ascending: false });
-
+        
       if (error) throw error;
-      return data as Document[];
-    }
+      return data || [];
+    },
+    enabled: !!user,
   });
 
   const createNewDocument = async () => {
+    if (!user) return;
+    
     try {
       const { data, error } = await supabase
         .from('documents')
-        .insert([{ owner_id: user?.id }])
-        .select()
+        .insert({
+          owner_id: user.id,
+          title: 'Untitled',
+        })
+        .select('*')
         .single();
-
+        
       if (error) throw error;
+      
       navigate(`/document/${data.id}`);
     } catch (error: any) {
       console.error('Error creating document:', error.message);
+      toast({
+        variant: "destructive",
+        title: "Error creating document",
+        description: error.message,
+      });
     }
   };
+  
+  if (loading) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  }
 
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+  
   return (
-    <div className="min-h-screen bg-[#f0eee6]">
+    <div className="min-h-screen bg-black text-[#F7F7F2]">
       <Helmet>
-        <title>My Documents – Paradocs</title>
+        <title>Your Documents - Inkwell</title>
+        <meta name="description" content="View and manage your documents" />
       </Helmet>
-
-      <header className="w-full py-6 bg-white shadow-sm">
-        <div className="container-custom flex justify-between items-center">
-          <Link to="/">
-            <Logo />
-          </Link>
-          <nav className="flex items-center space-x-6">
-            <Button 
-              onClick={createNewDocument}
-              className="bg-black text-white hover:bg-gray-800"
-            >
-              <PlusIcon className="w-4 h-4 mr-2" />
-              New Document
-            </Button>
-            <button
-              onClick={signOut}
-              className="text-gray-600 hover:text-black font-medium"
-            >
-              Sign Out
-            </button>
-          </nav>
+      
+      <Header currentApp="inkwell" />
+      
+      <main className="container-custom py-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Your Documents</h1>
+          
+          <Button onClick={createNewDocument} className="bg-[#0077B6] hover:bg-[#0077B6]/90">
+            <Plus size={18} className="mr-1" />
+            New Document
+          </Button>
         </div>
-      </header>
-
-      <main className="container-custom py-12">
+        
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="h-40 bg-white rounded-lg shadow-sm animate-pulse"
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card key={i} className="h-44 bg-white/5 animate-pulse" />
             ))}
           </div>
-        ) : documents?.length === 0 ? (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold text-gray-700 mb-4">
-              No documents yet
-            </h2>
-            <p className="text-gray-500 mb-8">
-              Create your first document to get started
-            </p>
-            <Button 
-              onClick={createNewDocument}
-              className="bg-black text-white hover:bg-gray-800"
-            >
-              <PlusIcon className="w-4 h-4 mr-2" />
-              Create Document
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {documents?.map((doc) => (
-              <Link
-                key={doc.id}
+        ) : documents && documents.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {documents.map((doc) => (
+              <Link 
+                key={doc.id} 
                 to={`/document/${doc.id}`}
-                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className="block no-underline"
               >
-                <h3 className="font-medium text-lg mb-2 truncate">
-                  {doc.title}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Last edited{' '}
-                  {new Date(doc.updated_at).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </p>
+                <Card className="h-44 bg-white/5 hover:bg-white/10 hover:shadow-lg transition-all border border-white/10 overflow-hidden group">
+                  <CardContent className="p-5 h-full flex flex-col">
+                    <h3 className="font-medium text-lg mb-2 truncate group-hover:text-[#0077B6] transition-colors">
+                      {doc.title || 'Untitled'}
+                    </h3>
+                    <div className="flex-1 text-sm text-gray-300 overflow-hidden">
+                      {doc.content && typeof doc.content === 'object' ? 
+                        "Click to open document" : 
+                        "Empty document"}
+                    </div>
+                    <div className="mt-auto pt-2 text-xs text-gray-400">
+                      Last edited: {new Date(doc.updated_at).toLocaleDateString()}
+                    </div>
+                  </CardContent>
+                </Card>
               </Link>
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <h3 className="text-xl mb-2">No documents yet</h3>
+            <p className="text-gray-400 mb-6">Create your first document to get started</p>
+            <Button onClick={createNewDocument} className="bg-[#0077B6] hover:bg-[#0077B6]/90">
+              <Plus size={18} className="mr-1" />
+              Create Document
+            </Button>
           </div>
         )}
       </main>

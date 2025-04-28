@@ -14,6 +14,8 @@ import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import Documents from "./pages/Documents";
 import DocumentEditor from "./pages/DocumentEditor";
+import Echo from "./pages/Echo";
+import Settings from "./pages/Settings";
 import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
@@ -32,6 +34,8 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/document/:id" element={<DocumentEditor />} />
+              <Route path="/echo" element={<Echo />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
