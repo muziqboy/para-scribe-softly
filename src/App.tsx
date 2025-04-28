@@ -17,6 +17,7 @@ import DocumentEditor from "./pages/DocumentEditor";
 import Echo from "./pages/Echo";
 import Settings from "./pages/Settings";
 import { HelmetProvider } from "react-helmet-async";
+import { Analytics } from "@vercel/analytics/react"
 
 // Set up cache time and stale time for React Query
 const queryClient = new QueryClient({
