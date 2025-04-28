@@ -18,11 +18,15 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Next.js compatibility layer
       "next/image": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
       "next/link": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
       "next/head": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
       "next/router": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
       "next/font": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
+      "next/navigation": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
+      "next/server": path.resolve(__dirname, "./src/lib/ssr-compat.tsx"),
+      "next": path.resolve(__dirname, "./src/lib/next-compat.tsx"),
     },
   },
   define: {
