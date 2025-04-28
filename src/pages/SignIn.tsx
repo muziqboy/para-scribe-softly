@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,7 +19,7 @@ const SignIn = () => {
   
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/documents');
     }
   }, [user, navigate]);
 
@@ -29,7 +30,7 @@ const SignIn = () => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      navigate('/dashboard');
+      navigate('/documents');
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -84,7 +85,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0eee6] flex flex-col">
+    <div className="min-h-screen bg-ink-white flex flex-col">
       <Helmet>
         <title>Sign In – Paradocs</title>
       </Helmet>
@@ -92,13 +93,16 @@ const SignIn = () => {
       <header className="w-full py-6">
         <div className="container-custom flex justify-between items-center">
           <Link to="/">
-            <Logo />
+            <div className="flex items-center">
+              <Logo />
+              <span className="text-lg font-semibold ml-2 text-ink-black">Paradocs</span>
+            </div>
           </Link>
           <nav className="flex items-center space-x-6">
-            <Link to="/about" className="text-paradocs-text hover:text-black font-medium">
+            <Link to="/about" className="text-ink-black hover:text-ink-accent transition-colors font-medium">
               About
             </Link>
-            <Link to="/signup" className="text-paradocs-text hover:text-black font-medium">
+            <Link to="/signup" className="text-ink-black hover:text-ink-accent transition-colors font-medium">
               Sign Up
             </Link>
           </nav>
@@ -106,9 +110,9 @@ const SignIn = () => {
       </header>
 
       <main className="flex-1 flex items-center justify-center px-4">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-sm">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
           <div className="text-center">
-            <h2 className="text-3xl font-bold">Sign In</h2>
+            <h2 className="text-3xl font-bold text-ink-black">Sign In</h2>
             <p className="mt-2 text-gray-600">
               Welcome back to Paradocs
             </p>
@@ -137,7 +141,7 @@ const SignIn = () => {
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-black text-white hover:bg-gray-800" 
+              className="w-full bg-ink-black text-white hover:bg-ink-black/90" 
               disabled={isLoading}
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
@@ -147,7 +151,7 @@ const SignIn = () => {
           <div className="text-center pt-4">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-black font-medium hover:underline">
+              <Link to="/signup" className="text-ink-black font-medium hover:text-ink-accent transition-colors">
                 Sign Up
               </Link>
             </p>
@@ -155,7 +159,7 @@ const SignIn = () => {
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+              <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-white text-gray-500">Or continue with</span>
@@ -165,7 +169,7 @@ const SignIn = () => {
           <div className="space-y-4">
             <Button 
               onClick={handleGoogleSignIn}
-              className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 shadow-sm"
             >
               <img src="https://www.google.com/favicon.ico" className="w-5 h-5 mr-2" alt="Google" />
               Continue with Google
@@ -173,7 +177,7 @@ const SignIn = () => {
             
             <Button 
               onClick={handleMicrosoftSignIn}
-              className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 shadow-sm"
             >
               <img src="https://www.microsoft.com/favicon.ico" className="w-5 h-5 mr-2" alt="Microsoft" />
               Continue with Microsoft

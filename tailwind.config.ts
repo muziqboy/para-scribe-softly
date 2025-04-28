@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))"
         },
+        // Inkwell design system colors
+        "ink-white": "#FFFFFF",
+        "ink-black": "#0A0A0A",
+        "ink-accent": "#0077B6",
         paradocs: {
           eggshell: "#F9F7F3",
           text: "#121212",
@@ -61,7 +66,6 @@ export default {
           softgray: "#F1F0FB"
         },
       },
-      
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -83,17 +87,45 @@ export default {
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" }
-        }
+        },
+        "fade-out": {
+          "0%": { opacity: "1", transform: "translateY(0)" },
+          "100%": { opacity: "0", transform: "translateY(10px)" }
+        },
+        "scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out"
+        "fade-in": "fade-in 0.3s ease-out",
+        "fade-out": "fade-out 0.3s ease-out",
+        "scale-in": "scale-in 0.15s ease-out",
       },
       boxShadow: {
-        'soft': '0 4px 20px rgba(0, 0, 0, 0.05)'
+        'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
+        'float': '0 8px 30px rgba(0, 0, 0, 0.08)'
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '85ch',
+            color: 'var(--ink-black)',
+            h1: {
+              color: 'var(--ink-black)',
+            },
+            h2: {
+              color: 'var(--ink-black)',
+            },
+            h3: {
+              color: 'var(--ink-black)',
+            }
+          }
+        }
       }
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
 } satisfies Config;

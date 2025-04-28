@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Logo from '@/components/ui/custom/Logo';
@@ -12,35 +12,69 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BookText, MessageSquare, Settings, User } from 'lucide-react';
+import {
+  BookText,
+  MessageSquare,
+  Settings,
+  User,
+  Menu
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   currentApp?: 'inkwell' | 'echo';
+  toggleSidebar?: () => void;
+  isMobile?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentApp }) => {
+const Header: React.FC<HeaderProps> = ({ 
+  currentApp, 
+  toggleSidebar,
+  isMobile = false
+}) => {
   const { user, signOut } = useAuth();
   const userInitials = user?.email?.charAt(0).toUpperCase() || 'U';
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   
   return (
-    <header className="sticky top-0 w-full backdrop-blur-md bg-[#0A0A0A]/70 border-b border-white/10 z-50">
-      <div className="container-custom flex justify-between items-center h-16">
+    <header className="sticky top-0 w-full backdrop-blur-md bg-ink-white/70 border-b border-gray-200 z-50">
+      <div className="container-custom flex justify-between items-center h-14">
         {/* Logo */}
         <div className="flex items-center gap-2">
+          {toggleSidebar && isMobile && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={toggleSidebar}
+              className="mr-2 md:hidden"
+            >
+              <Menu size={20} />
+              <span className="sr-only">Toggle Sidebar</span>
+            </Button>
+          )}
+          
           <Link to="/" className="flex items-center">
             <Logo />
-            <span className="text-lg font-bold ml-2 text-[#F7F7F2]">Paradocs</span>
+            <span className="text-lg font-semibold ml-2 text-ink-black">Paradocs</span>
           </Link>
-          
-          {/* App Navigation Links */}
-          {user && (
-            <nav className="ml-8 hidden md:flex space-x-6">
+        </div>
+        
+        {/* App Navigation Links */}
+        {user && (
+          <nav className="hidden md:flex items-center">
+            <div className="flex space-x-4 rounded-full bg-gray-100/50 p-1">
               {currentApp !== 'inkwell' && (
                 <Link 
                   to="/documents" 
-                  className="flex items-center gap-2 text-[#F7F7F2]/70 hover:text-[#F7F7F2] transition-colors"
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium",
+                    "hover:bg-white hover:shadow-sm transition-all duration-150",
+                    currentApp === 'inkwell' ? "bg-white shadow-sm" : "text-gray-700"
+                  )}
                 >
-                  <BookText size={18} />
+                  <BookText size={16} />
                   <span>Inkwell</span>
                 </Link>
               )}
@@ -48,24 +82,28 @@ const Header: React.FC<HeaderProps> = ({ currentApp }) => {
               {currentApp !== 'echo' && (
                 <Link 
                   to="/echo" 
-                  className="flex items-center gap-2 text-[#F7F7F2]/70 hover:text-[#F7F7F2] transition-colors"
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium",
+                    "hover:bg-white hover:shadow-sm transition-all duration-150",
+                    currentApp === 'echo' ? "bg-white shadow-sm" : "text-gray-700"
+                  )}
                 >
-                  <MessageSquare size={18} />
+                  <MessageSquare size={16} />
                   <span>Echo</span>
                 </Link>
               )}
-            </nav>
-          )}
-        </div>
+            </div>
+          </nav>
+        )}
         
         {/* User Menu */}
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded-full outline-none ring-offset-2 ring-offset-black focus-visible:ring-2 ring-[#0077B6]">
-                <Avatar>
+              <button className="rounded-full outline-none ring-offset-2 ring-offset-white focus-visible:ring-2 ring-ink-accent">
+                <Avatar className="h-8 w-8 border border-gray-200">
                   <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || 'User'} />
-                  <AvatarFallback className="bg-[#0077B6] text-[#F7F7F2]">{userInitials}</AvatarFallback>
+                  <AvatarFallback className="bg-ink-accent text-white text-sm">{userInitials}</AvatarFallback>
                 </Avatar>
               </button>
             </DropdownMenuTrigger>
@@ -107,8 +145,58 @@ const Header: React.FC<HeaderProps> = ({ currentApp }) => {
           </DropdownMenu>
         ) : (
           <Link to="/signin">
-            <button className="btn-primary">Sign In</button>
+            <Button className="bg-ink-black hover:bg-ink-black/90 text-white">Sign In</Button>
           </Link>
+        )}
+
+        {/* Mobile Menu */}
+        {user && isMobile && (
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="sm">
+                <Menu size={20} />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <div className="p-4 space-y-4">
+                <Link 
+                  to="/documents"
+                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                  onClick={() => setIsDrawerOpen(false)}
+                >
+                  <BookText size={18} />
+                  <span className="text-base font-medium">Inkwell</span>
+                </Link>
+                <Link 
+                  to="/echo"
+                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                  onClick={() => setIsDrawerOpen(false)}
+                >
+                  <MessageSquare size={18} />
+                  <span className="text-base font-medium">Echo</span>
+                </Link>
+                <div className="pt-2 border-t">
+                  <Link 
+                    to="/settings"
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                    onClick={() => setIsDrawerOpen(false)}
+                  >
+                    <Settings size={18} />
+                    <span className="text-base font-medium">Settings</span>
+                  </Link>
+                  <button 
+                    onClick={() => { 
+                      signOut();
+                      setIsDrawerOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md text-left"
+                  >
+                    <span className="text-base font-medium">Sign out</span>
+                  </button>
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
         )}
       </div>
     </header>
