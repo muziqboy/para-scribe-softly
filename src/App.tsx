@@ -30,6 +30,11 @@ const queryClient = new QueryClient({
   },
 });
 
+// Define a global window.process object to prevent Next.js errors
+if (typeof window !== 'undefined' && !window.process) {
+  window.process = { env: {} } as any;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
