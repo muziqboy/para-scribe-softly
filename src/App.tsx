@@ -45,19 +45,15 @@ const App = () => (
             <Sonner />
             <Analytics />
             <Routes>
-              {/* Main Routes */}
+              {/* Public Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
-              <Route path="/dashboard" element={<Dashboard />} />
               
-              {/* Document Routes */}
+              {/* Protected Routes */}
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/document/:id" element={<DocumentEditor />} />
-              
-              {/* Echo Routes */}
               <Route path="/echo" element={<Echo />} />
-              
-              {/* Settings Routes */}
               <Route path="/settings" element={<Settings />} />
               <Route path="/settings/:tab" element={<Settings />} />
               
