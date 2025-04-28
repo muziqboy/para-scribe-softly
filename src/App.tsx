@@ -28,6 +28,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/documents" element={<Documents />} />
+              <Route path="/document/:id" element={<DocumentEditor />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
