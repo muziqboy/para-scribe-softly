@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import AuthCallback from "./pages/AuthCallback"; // New component for handling callbacks
 import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/auth" element={<Navigate to="/signin" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

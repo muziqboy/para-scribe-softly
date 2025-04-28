@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
 interface AuthContextType {
   session: Session | null;
@@ -18,6 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Set up auth state listener first
@@ -27,10 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (event === 'SIGNED_IN' && window.location.pathname === '/signup') {
-          // Redirect to dashboard when signed in from the signup page
-          navigate('/dashboard');
-        }
+        // Don't auto-redirect on SIGNED_IN event to avoid interrupting the OAuth callback flow
+        // The AuthCallback component will handle the redirection
         
         setLoading(false);
       }
@@ -47,8 +47,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [navigate]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/signin');
+    try {
+      await supabase.auth.signOut();
+      navigate('/signin');
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account",
+      });
+    } catch (error: any) {
+      console.error('Error signing out:', error.message);
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    }
   };
 
   return (
