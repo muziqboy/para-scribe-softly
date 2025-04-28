@@ -14,7 +14,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { ChevronLeft, Menu, Save } from 'lucide-react';
 import { debounce } from '@/lib/utils';
 
-const DocumentEditor = () => {
+const DocumentEditor: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -38,11 +38,15 @@ const DocumentEditor = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!id && !!user,
-    onSuccess: (data) => {
-      if (data?.title) setTitle(data.title);
-    },
+    enabled: !!id && !!user
   });
+
+  // Set title when document loads
+  useEffect(() => {
+    if (document?.title) {
+      setTitle(document.title);
+    }
+  }, [document]);
 
   // Create TipTap editor
   const editor = useEditor({
@@ -158,7 +162,8 @@ const DocumentEditor = () => {
   }
 
   if (!user) {
-    return navigate('/signin', { replace: true });
+    navigate('/signin', { replace: true });
+    return null;
   }
 
   return (
