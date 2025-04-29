@@ -2,18 +2,18 @@
 {
   "rewrites": [
     { "source": "/auth/callback", "destination": "/index.html" },
-    { "source": "/dashboard",     "destination": "/index.html" },
-    { "source": "/documents",     "destination": "/index.html" },
-    { "source": "/document/:id*", "destination": "/index.html" },
-    { "source": "/echo",          "destination": "/index.html" },
-    { "source": "/settings",      "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/docs", "destination": "/index.html" },
+    { "source": "/doc/:id*", "destination": "/index.html" },
+    { "source": "/echo", "destination": "/index.html" },
+    { "source": "/settings", "destination": "/index.html" },
     { "source": "/settings/:tab", "destination": "/index.html" },
-    { "source": "/api/:path*",    "destination": "/api/:path*" },
-    { "source": "/(.*)",          "destination": "/index.html" }
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
-      "source": "/documents",
+      "source": "/docs",
       "headers": [
         {
           "key": "Cache-Control",
@@ -32,5 +32,6 @@
     }
   ],
   "buildCommand": "pnpm install --no-frozen-lockfile && pnpm build",
-  "installCommand": "pnpm install --no-frozen-lockfile"
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "rootDirectory": "inkwell-site"
 }
