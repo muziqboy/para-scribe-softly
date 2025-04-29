@@ -1,11 +1,10 @@
 
 // Dashboard.tsx — Paradocs full dashboard with TipTap Editor
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Logo from '../components/ui/custom/Logo';
+import Header from '../components/layout/Header';
 import ActionButtons, { ActionType } from '../components/features/ActionButtons';
 import OutputDisplay from '../components/features/OutputDisplay';
 import DocumentUpload from '../components/features/DocumentUpload';
@@ -13,7 +12,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 const Dashboard = () => {
-  const { signOut } = useAuth();
+  const { user } = useAuth();
   const [outputText, setOutputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
@@ -68,40 +67,32 @@ const Dashboard = () => {
     console.log('Files uploaded:', files);
   };
 
-const handlePrompt = async () => {
-  if (!editor) return;
+  const handlePrompt = async () => {
+    if (!editor) return;
 
-  const { from, to } = editor.state.selection;
-  const selectedText = editor.state.doc.textBetween(from, to, '\n', '\0');
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, '\n', '\0');
 
-  if (!selectedText.trim()) {
-    alert('Please select some text first!');
-    return;
-  }
-
-  setIsPromptOpen(false);
-  setLoading(true);
-
-  try {
-    // 🛑 For now, just fake a simple edit instead of calling backend
-    const mockedResult = `AI Suggestion: ${selectedText}`;
-
-    editor.commands.insertContent(mockedResult);
-    setAiResponse(mockedResult);
-  } catch (error) {
-    console.error('Prompt error:', error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  useEffect(() => {
-    if (editor && aiResponse) {
-      editor.commands.insertContent(aiResponse);
-      setAiResponse('');
+    if (!selectedText.trim()) {
+      alert('Please select some text first!');
+      return;
     }
-  }, [aiResponse, editor]);
+
+    setIsPromptOpen(false);
+    setLoading(true);
+
+    try {
+      // 🛑 For now, just fake a simple edit instead of calling backend
+      const mockedResult = `AI Suggestion: ${selectedText}`;
+
+      editor.commands.insertContent(mockedResult);
+      setAiResponse(mockedResult);
+    } catch (error) {
+      console.error('Prompt error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -109,24 +100,7 @@ const handlePrompt = async () => {
         <title>Dashboard – Paradocs</title>
       </Helmet>
 
-      <header className="w-full py-6 bg-black/60 backdrop-blur-md border-b border-white/10">
-        <div className="container-custom flex justify-between items-center">
-          <Link to="/">
-            <Logo />
-          </Link>
-          <nav className="flex items-center space-x-6">
-            <Link to="/about" className="text-white hover:text-gray-300 font-medium">
-              About
-            </Link>
-            <button
-              onClick={signOut}
-              className="text-white hover:text-gray-300 font-medium"
-            >
-              Sign Out
-            </button>
-          </nav>
-        </div>
-      </header>
+      <Header user={user} currentApp="inkwell" />
 
       <main className="container-custom pt-24 pb-20">
         <h1 className="text-3xl font-bold mb-8 text-white">Document Workspace</h1>
