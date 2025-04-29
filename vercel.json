@@ -31,7 +31,6 @@
       ]
     }
   ],
-  "buildCommand": "cd inkwell-site && pnpm install --no-frozen-lockfile && pnpm build",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "outputDirectory": "inkwell-site/.next"
+  "buildCommand": "pnpm install --no-frozen-lockfile && pnpm build",
+  "installCommand": "pnpm install --no-frozen-lockfile"
 }
