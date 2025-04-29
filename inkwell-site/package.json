@@ -10,7 +10,7 @@
     "lint": "eslint --ext .ts,.tsx src"
   },
   "engines": {
-    "node": ">=20 <21",
+    "node": ">=20 <23",
     "pnpm": ">=10 <11"
   },
   "dependencies": {
