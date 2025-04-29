@@ -1,166 +1,176 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, BookText, MessageCircle } from 'lucide-react';
 
-export default function Home() {
+export default function HomePage() {
+  const supabase = createClientComponentClient();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const supabase = createClientComponentClient();
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session) {
-        router.push('/dashboard');
-      } else {
-        setLoading(false);
-      }
-    };
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  
+  const handleEmailSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
     
-    checkUser();
-  }, [router, supabase]);
-
-  const signInWithGoogle = async () => {
+    setIsSubmitting(true);
+    
+    // This would typically connect to a newsletter service
+    // For now we'll just simulate success
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubscribed(true);
+      setEmail('');
+    }, 1000);
+  };
+  
+  const handleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
   };
-
-  const signInWithMicrosoft = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'azure',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
-    });
-  };
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    setIsSubmitted(true);
-    setIsSubmitting(false);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
+  
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-purple-50">
-      <header className="absolute top-0 right-0 p-6 z-10">
-        <div className="flex gap-4">
+    <div className="min-h-screen flex flex-col">
+      {/* Hero section */}
+      <div className="bg-white">
+        <header className="container-custom py-6 flex justify-between items-center">
+          <div className="flex items-center">
+            <span className="text-xl font-bold">Paradocs</span>
+          </div>
+          
           <Button 
-            variant="ghost" 
-            onClick={() => router.push('/about')}
-            className="text-gray-600 hover:text-black"
-          >
-            About
-          </Button>
-          <Button 
-            onClick={signInWithGoogle}
-            className="bg-purple-600 hover:bg-purple-700 text-white"
+            onClick={handleSignIn} 
+            variant="outline"
+            className="sm:ml-auto"
           >
             Sign in
           </Button>
-        </div>
-      </header>
+        </header>
+      </div>
       
-      <div className="container-custom py-16 md:py-24 min-h-screen flex flex-col items-center justify-center">
-        <div className="w-full max-w-3xl mx-auto text-center space-y-10">
-          <div className="space-y-6">
-            <div className="inline-block px-4 py-1.5 bg-purple-100 rounded-full text-purple-700 text-sm font-medium mb-2">
-              Coming Soon
+      <main className="flex-1">
+        <section className="container-custom py-24">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+              Welcome to Paradocs
+            </h1>
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+              The all-in-one document management and AI assistant platform for teams and individuals.
+            </p>
+            
+            <div className="flex flex-col md:flex-row gap-4 justify-center mb-16">
+              <Button 
+                onClick={handleSignIn} 
+                className="px-8 py-6 text-lg"
+              >
+                Get Started <ArrowRight className="ml-2" />
+              </Button>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
-              Welcome to <span className="text-purple-600">Paradocs</span>
-            </h1>
-            
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Your AI-powered document assistant. Simplify your document workflows with our intelligent copilot.
-            </p>
-          </div>
-          
-          <div className="mt-12 max-w-md mx-auto w-full">
-            {!isSubmitted ? (
-              <form onSubmit={handleSubscribe} className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1 relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
-                    <Input 
-                      placeholder="Enter your email" 
-                      className="pl-10 h-12 border-purple-100 focus-visible:ring-purple-500" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <Button 
-                    type="submit"
-                    className="bg-purple-600 hover:bg-purple-700 text-white h-12 px-6"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      "Subscribing..."
-                    ) : (
-                      <>
-                        Notify me <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
+            <div className="grid md:grid-cols-2 gap-8 mb-20 max-w-4xl mx-auto">
+              <div className="bg-gray-50 p-8 rounded-lg text-left">
+                <div className="bg-blue-100 rounded-full p-3 w-fit mb-4">
+                  <BookText className="h-6 w-6 text-blue-600" />
                 </div>
-              </form>
-            ) : (
-              <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 flex items-center justify-center space-x-2 animate-fade-in">
-                <Check className="text-purple-600 h-5 w-5" />
-                <p className="text-purple-800">Thank you! We'll keep you updated.</p>
+                <h3 className="text-xl font-semibold mb-3">Inkwell Documents</h3>
+                <p className="text-gray-600 mb-4">
+                  Create and collaborate on rich documents with our powerful editor. Support for tables, images, code blocks, and more.
+                </p>
               </div>
-            )}
+              
+              <div className="bg-gray-50 p-8 rounded-lg text-left">
+                <div className="bg-purple-100 rounded-full p-3 w-fit mb-4">
+                  <MessageCircle className="h-6 w-6 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Echo AI Assistant</h3>
+                <p className="text-gray-600 mb-4">
+                  Your intelligent AI companion that helps you compose, edit, and analyze documents with human-like understanding.
+                </p>
+              </div>
+            </div>
             
-            <p className="text-gray-500 text-sm mt-3 text-center">
-              We'll notify you when we launch. No spam, ever.
-            </p>
+            <div className="max-w-md mx-auto">
+              <h3 className="text-xl font-semibold mb-4">Stay updated</h3>
+              
+              {isSubscribed ? (
+                <div className="bg-green-50 text-green-700 p-4 rounded-lg">
+                  Thanks for subscribing! We'll keep you updated on the latest features.
+                </div>
+              ) : (
+                <form onSubmit={handleEmailSubscribe} className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="flex-1"
+                    required
+                  />
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Subscribing..." : "Subscribe"}
+                  </Button>
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <footer className="bg-gray-50 py-12">
+        <div className="container-custom">
+          <div className="md:flex md:justify-between">
+            <div className="mb-8 md:mb-0">
+              <span className="text-xl font-semibold">Paradocs</span>
+              <p className="mt-2 text-sm text-gray-600">
+                The document platform for the future.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+              <div>
+                <h3 className="text-sm font-semibold mb-3">Product</h3>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">Features</Link></li>
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">Pricing</Link></li>
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">API</Link></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-semibold mb-3">Company</h3>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">About</Link></li>
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">Blog</Link></li>
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">Careers</Link></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-semibold mb-3">Legal</h3>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">Privacy</Link></li>
+                  <li><Link href="#" className="text-gray-600 hover:text-gray-900">Terms</Link></li>
+                </ul>
+              </div>
+            </div>
           </div>
           
-          <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              onClick={signInWithGoogle}
-              className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 px-6 py-3 rounded-md shadow-sm"
-            >
-              <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
-              Sign in with Google
-            </Button>
-            <Button
-              onClick={signInWithMicrosoft}
-              className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 px-6 py-3 rounded-md shadow-sm"
-            >
-              <img src="https://www.microsoft.com/favicon.ico" className="w-5 h-5" alt="Microsoft" />
-              Sign in with Microsoft
-            </Button>
+          <div className="mt-8 border-t border-gray-200 pt-8">
+            <p className="text-sm text-gray-600">
+              © {new Date().getFullYear()} Paradocs. All rights reserved.
+            </p>
           </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }

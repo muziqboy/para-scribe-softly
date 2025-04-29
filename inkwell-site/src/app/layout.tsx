@@ -1,33 +1,26 @@
 
-import './globals.css';
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Metadata } from 'next';
+import { GeistSans } from 'geist/font/sans';
 import Header from '@/components/layout/Header';
-
-// Import the Geist fonts
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Paradocs",
-  description: "Your AI-powered document assistant",
+  title: 'Paradocs - Document Management & AI Assistant',
+  description: 'Create, edit, manage, and collaborate on documents with Paradocs',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={GeistSans.className}>
+      <body className="min-h-screen bg-background">
+        <Header />
         {children}
       </body>
     </html>

@@ -2,16 +2,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export default function AuthCallback() {
+export default function AuthCallbackPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { error } = await supabase.auth.getSession();
       
       if (error) {
         console.error('Error during auth callback:', error);
@@ -19,19 +19,18 @@ export default function AuthCallback() {
         return;
       }
       
-      if (data.session) {
-        router.push('/dashboard');
-      }
+      router.push('/dashboard');
     };
     
     handleAuthCallback();
   }, [router, supabase]);
   
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-purple-600 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-        <p className="mt-4 text-xl font-medium">Signing you in...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 mx-auto mb-4"></div>
+        <h2 className="text-xl font-medium">Signing you in...</h2>
+        <p className="text-gray-500 mt-2">Please wait while we complete the authentication.</p>
       </div>
     </div>
   );
