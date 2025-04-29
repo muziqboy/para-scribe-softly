@@ -1,118 +1,77 @@
 
-@font-face {
-  font-family: 'NotionInter';
-  src: url('/fonts/NotionInter-Medium.be3a966c.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+:root {
+  --background: #FFFFFF;
+  --foreground: #0A0A0A;
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    --background: 0 0% 100%; /* ink-white */
-    --foreground: 240 10% 3.9%; /* ink-black */
-
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
-
-    --primary: 204 100% 36%; /* ink-accent */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
-
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-
-    --accent: 204 100% 36% / 0.1; /* ink-accent with opacity */
-    --accent-foreground: 204 100% 36%; /* ink-accent */
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 13% 91%;
-    --input: 214 32% 91%;
-    --ring: 204 100% 36%; /* ink-accent */
-
-    --radius: 0.75rem;
-  }
-
-  * {
-    @apply border-border;
-  }
-  
-  body {
-    @apply bg-ink-white text-ink-black antialiased;
-    font-family: 'Geist Sans', sans-serif;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-semibold;
+    --background: #0A0A0A;
+    --foreground: #FFFFFF;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-ink-black text-white px-6 py-3 rounded-lg font-medium transition-all 
-      hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm;
-  }
-  
-  .btn-secondary {
-    @apply bg-gray-100 text-ink-black px-5 py-2.5 rounded-lg font-medium transition-all
-      hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0;
-  }
-  
-  .card-soft {
-    @apply bg-ink-white rounded-xl shadow-soft p-6;
-  }
-
-  .container-custom {
-    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .input-custom {
-    @apply bg-ink-white border border-gray-200 rounded-lg p-4 w-full focus:outline-none focus:ring-2 focus:ring-ink-accent;
-  }
-
-  .product-card {
-    @apply p-8 rounded-xl transition-all duration-300 hover:shadow-float hover:-translate-y-1 backdrop-blur-md bg-ink-white border border-gray-200;
-  }
-
-  /* Typography for Editor */
-  .prose h1 {
-    @apply text-2xl font-bold mb-4 text-ink-black;
-  }
-  
-  .prose h2 {
-    @apply text-xl font-bold mb-3 text-ink-black;
-  }
-  
-  .prose h3 {
-    @apply text-lg font-bold mb-3 text-ink-black;
-  }
-  
-  .prose p {
-    @apply mb-4 text-ink-black;
-  }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Geist Sans', sans-serif;
 }
 
-/* Tiptap Editor */
+.container-custom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Micro-animations */
+.animate-fade-in {
+  animation: fadeIn 150ms ease-out forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Editor specific styles */
 .ProseMirror {
-  @apply outline-none min-h-[300px];
+  min-height: 300px;
+  padding: 1rem;
+  outline: none;
 }
 
-.ProseMirror p.is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  @apply text-gray-400 float-left h-0 pointer-events-none;
+.ProseMirror p {
+  margin-bottom: 0.75rem;
 }
 
+.ProseMirror h1, .ProseMirror h2, .ProseMirror h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.ProseMirror h1 {
+  font-size: 1.875rem;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+}
+
+.ProseMirror h3 {
+  font-size: 1.25rem;
+}
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror a {
+  color: #0077B6;
+  text-decoration: underline;
+}
