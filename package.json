@@ -7,7 +7,8 @@
     "prepare": "husky install",
     "dev": "pnpm --filter inkwell-site dev",
     "build": "pnpm --filter inkwell-site build",
-    "start": "pnpm --filter inkwell-site start"
+    "start": "pnpm --filter inkwell-site start",
+    "build:dev": "vite build --mode development",
   },
   "devDependencies": {
     "husky": "^9.0.0"
