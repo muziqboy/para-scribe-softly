@@ -31,5 +31,10 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     "process.env": {},
+  },
+  build: {
+    outDir: 'dist',
+    minify: mode === 'production',
+    sourcemap: mode === 'development',
   }
 }));
