@@ -17,7 +17,6 @@ import DocumentEditor from "./pages/DocumentEditor";
 import Echo from "./pages/Echo";
 import Settings from "./pages/Settings";
 import { HelmetProvider } from "react-helmet-async";
-import { Analytics } from "@vercel/analytics/react";
 
 // Set up cache time and stale time for React Query
 const queryClient = new QueryClient({
@@ -30,11 +29,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Define a global window.process object to prevent Next.js errors
-if (typeof window !== 'undefined' && !window.process) {
-  window.process = { env: {} } as any;
-}
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
@@ -43,17 +37,20 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <Analytics />
             <Routes>
-              {/* Public Routes */}
+              {/* Main Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
-              
-              {/* Protected Routes */}
               <Route path="/dashboard" element={<Dashboard />} />
+              
+              {/* Document Routes */}
               <Route path="/documents" element={<Documents />} />
               <Route path="/document/:id" element={<DocumentEditor />} />
+              
+              {/* Echo Routes */}
               <Route path="/echo" element={<Echo />} />
+              
+              {/* Settings Routes */}
               <Route path="/settings" element={<Settings />} />
               <Route path="/settings/:tab" element={<Settings />} />
               

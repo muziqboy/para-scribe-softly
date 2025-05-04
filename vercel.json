@@ -1,6 +1,23 @@
 
 {
-  "buildCommand": "cd inkwell-site && pnpm install && pnpm build",
-  "installCommand": "pnpm install",
-  "outputDirectory": "inkwell-site/.next"
+  "rewrites": [
+    { "source": "/auth/callback", "destination": "/index.html" },
+    { "source": "/dashboard",     "destination": "/index.html" },
+    { "source": "/documents",     "destination": "/index.html" },
+    { "source": "/document/:id*", "destination": "/index.html" },
+    { "source": "/echo",          "destination": "/index.html" },
+    { "source": "/settings",      "destination": "/index.html" },
+    { "source": "/(.*)",          "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/documents",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
